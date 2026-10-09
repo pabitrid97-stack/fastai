@@ -2,88 +2,159 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#140b4a">
 <title>Starting Eko ..</title>
+<link rel="preconnect" href="https://fastai-rs6i.onrender.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23140b4a'/%3E%3Ctext x='32' y='45' font-size='38' font-weight='bold' text-anchor='middle' fill='%237ff3ff' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
 <style>
-  html,body{margin:0;height:100%;overflow:hidden;font-family:system-ui,Arial,sans-serif;color:#fff;
-    background:linear-gradient(150deg,#1d0f5e 0%,#0b3b7a 50%,#0a6a7a 100%)}
+  :root{--c1:#7ff3ff;--c2:#c4a8ff;--c3:#ff7ee8}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%;overflow:hidden;color:#fff;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    -webkit-user-select:none;user-select:none;
+    background:
+      radial-gradient(circle at 15% 10%,rgba(255,90,220,.40),transparent 42%),
+      radial-gradient(circle at 90% 25%,rgba(40,220,255,.34),transparent 45%),
+      radial-gradient(circle at 50% 100%,rgba(80,120,255,.45),transparent 50%),
+      linear-gradient(150deg,#1d0f5e 0%,#0b3b7a 50%,#0a6a7a 100%)}
+
+  /* bubbles: sirf transform+opacity (GPU), fixed 9 elements, koi JS nahi */
+  .bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;contain:strict}
+  .bg i{position:absolute;bottom:-160px;left:var(--l);width:var(--s);height:var(--s);border-radius:50%;
+    background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.8) 0 5%,rgba(255,255,255,.22) 15%,rgba(255,255,255,.05) 58%,rgba(120,220,255,.28) 100%);
+    border:1px solid rgba(255,255,255,.4);
+    will-change:transform,opacity;backface-visibility:hidden;
+    animation:rise var(--t) linear var(--d) infinite}
+  @keyframes rise{
+    0%{transform:translate3d(0,0,0) scale(.8);opacity:0}
+    10%{opacity:.9}
+    50%{transform:translate3d(24px,-60vh,0) scale(1)}
+    100%{transform:translate3d(-18px,-125vh,0) scale(1.1);opacity:0}}
+
   .wrap{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;z-index:2;padding:20px;box-sizing:border-box}
-  .orb{width:96px;height:96px;border-radius:50%;margin-bottom:22px;
-    background:radial-gradient(circle at 30% 30%,#fff,#7ff3ff 40%,#8b5cf6 80%);
-    box-shadow:0 0 40px rgba(127,243,255,.7),0 0 90px rgba(139,92,246,.5)}
-  h1{margin:0 0 6px;height:2.2rem;line-height:2.2rem;white-space:nowrap;font-size:1.7rem;text-shadow:0 2px 12px rgba(0,0,0,.4)}
-  #sec{font-size:2.4rem;font-weight:700;margin:6px 0;height:3rem;line-height:3rem;width:6ch;font-variant-numeric:tabular-nums}
-  #tip{width:300px;max-width:90vw;height:64px;overflow:hidden;opacity:.9;font-size:.95rem;margin:10px 0 0;transition:opacity .4s}
-  .b{position:absolute;bottom:-120px;border-radius:50%;
-    background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.75),rgba(127,243,255,.25) 45%,rgba(139,92,246,.2));
-    border:1px solid rgba(255,255,255,.5);will-change:transform;animation:rise linear forwards;pointer-events:none}
-  @keyframes rise{to{transform:translate3d(var(--dx),-130vh,0)}}
+    text-align:center;padding:24px;padding-top:max(24px,env(safe-area-inset-top));padding-bottom:max(24px,env(safe-area-inset-bottom))}
+  .card{width:min(92vw,380px);padding:30px 22px 24px;border-radius:28px;
+    background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.07)),rgba(24,14,90,.55);
+    border:1px solid rgba(255,255,255,.30);
+    box-shadow:0 10px 30px rgba(5,0,40,.40),inset 0 1px 0 rgba(255,255,255,.45);
+    animation:in .7s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes in{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+
+  /* progress ring + orb */
+  .ring{position:relative;width:148px;height:148px;margin:0 auto 18px}
+  .ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+  .ring circle{fill:none;stroke-width:6;stroke-linecap:round}
+  .ring .tr{stroke:rgba(255,255,255,.16)}
+  .ring .pg{stroke:url(#g);stroke-dasharray:408;stroke-dashoffset:408;animation:fill 60s linear forwards}
+  @keyframes fill{to{stroke-dashoffset:0}}
+  .orb{position:absolute;inset:22px;border-radius:50%;
+    background:radial-gradient(circle at 30% 28%,#fff,var(--c1) 38%,#8b5cf6 82%);
+    box-shadow:0 0 34px rgba(127,243,255,.65),0 0 70px rgba(139,92,246,.45);
+    animation:pulse 2.4s ease-in-out infinite;will-change:transform}
+  @keyframes pulse{50%{transform:scale(1.07)}}
+  #sec{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:1.7rem;font-weight:800;font-variant-numeric:tabular-nums;color:#1b1250;letter-spacing:.5px}
+
+  h1{margin:0 0 4px;font-size:1.55rem;font-weight:800;letter-spacing:.3px;
+    background:linear-gradient(45deg,#ffd1fb,#9ff3ff,#fff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  #status{margin:0;font-size:.92rem;opacity:.92;min-height:1.4em}
+  .steps{display:flex;gap:6px;justify-content:center;margin:16px 0 14px}
+  .steps b{width:34px;height:5px;border-radius:99px;background:rgba(255,255,255,.2);transition:background .5s}
+  .steps b.on{background:linear-gradient(90deg,var(--c1),var(--c2))}
+  #tip{min-height:46px;margin:0 auto;max-width:300px;font-size:.88rem;line-height:1.45;opacity:.9;transition:opacity .4s}
+  #net{display:none;margin-top:10px;font-size:.8rem;color:#ffd3d3}
+  noscript{position:fixed;left:0;right:0;bottom:20px;text-align:center}
+  noscript a{color:#7ff3ff}
+
+  @media (prefers-reduced-motion:reduce){.bg i,.orb,.card{animation:none}.bg i{opacity:.4;bottom:auto;top:30%}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="orb"></div>
-  <h1 id="h">Starting Eko ..</h1>
-  <div id="sec">1:00</div>
-  <div id="tip"></div>
+<div class="bg" aria-hidden="true">
+  <i style="--s:70px;--l:6%;--d:-0s;--t:22s"></i><i style="--s:34px;--l:22%;--d:-3s;--t:17s"></i>
+  <i style="--s:104px;--l:38%;--d:-6s;--t:28s"></i><i style="--s:52px;--l:56%;--d:-1s;--t:20s"></i>
+  <i style="--s:26px;--l:72%;--d:-8s;--t:15s"></i><i style="--s:88px;--l:84%;--d:-4s;--t:25s"></i>
+  <i style="--s:44px;--l:12%;--d:-11s;--t:19s"></i><i style="--s:62px;--l:48%;--d:-13s;--t:23s"></i>
+  <i style="--s:30px;--l:92%;--d:-9s;--t:16s"></i>
 </div>
+
+<div class="wrap">
+  <div class="card">
+    <div class="ring">
+      <svg viewBox="0 0 148 148" aria-hidden="true">
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7ff3ff"/><stop offset=".5" stop-color="#c4a8ff"/><stop offset="1" stop-color="#ff7ee8"/></linearGradient></defs>
+        <circle class="tr" cx="74" cy="74" r="65"/>
+        <circle class="pg" cx="74" cy="74" r="65"/>
+      </svg>
+      <div class="orb"></div>
+      <div id="sec">1:00</div>
+    </div>
+    <h1 id="h">Starting Eko ..</h1>
+    <p id="status">Server ko jagaya ja raha hai ✨</p>
+    <div class="steps" aria-hidden="true"><b class="on"></b><b></b><b></b></div>
+    <p id="tip"></p>
+    <div id="net">Internet slow lag raha hai, koshish jaari hai ..</div>
+  </div>
+</div>
+<noscript><a href="https://fastai-rs6i.onrender.com">Eko kholne ke liye yahan tap karo</a></noscript>
+
 <script>
-// Aapki Render site
 const SITE = "https://fastai-rs6i.onrender.com";
+const TOTAL = 60;
+const $ = id => document.getElementById(id);
+let done = false, fails = 0, timer = null;
+const t0 = Date.now();
 
-// Bubbles niche se upar (halke: max 18 ek saath)
-const MAX_B=18; let nb=0;
-function bubble(){
-  if(document.hidden || nb>=MAX_B) return;
-  const el=document.createElement("div"); el.className="b";
-  const s=16+Math.random()*54;
-  el.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}vw;--dx:${Math.random()*80-40}px;animation-duration:${6+Math.random()*5}s`;
-  nb++;
-  el.addEventListener("animationend",()=>{el.remove();nb--;});
-  document.body.appendChild(el);
+function go(){ if(done) return; done = true; $("h").textContent = "Ready! 🚀"; $("status").textContent = "Eko khul raha hai .."; location.replace(SITE); }
+
+// countdown: 1 baar per second (pehle 4 baar/sec tha)
+const STAGES = [[0,"Server ko jagaya ja raha hai ✨"],[15,"Eko tayyar ho raha hai .."],[40,"Bas thodi der aur .."]];
+let stage = 0;
+function tick(){
+  const el = Math.floor((Date.now()-t0)/1000), left = Math.max(0, TOTAL-el);
+  $("sec").textContent = Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
+  let s = 0; STAGES.forEach((x,i)=>{ if(el>=x[0]) s = i; });
+  if(s !== stage || el === 0){
+    stage = s; $("status").textContent = STAGES[s][1];
+    document.querySelectorAll(".steps b").forEach((b,i)=>b.classList.toggle("on", i<=s));
+  }
+  if(left === 0 && !done) $("h").textContent = "Almost there ..";
 }
-setInterval(bubble,550);
-for(let i=0;i<6;i++) setTimeout(bubble,i*200);
+setInterval(tick, 1000); tick();
 
-// 1 minute countdown (site jaagte hi turant khul jayegi, timer ka intezaar nahi)
-const t0=Date.now(), TOTAL=60;
-setInterval(()=>{
-  const left=Math.max(0,TOTAL-Math.floor((Date.now()-t0)/1000));
-  const m=Math.floor(left/60), sc=String(left%60).padStart(2,"0");
-  document.getElementById("sec").textContent=m+":"+sc;
-  if(left===0 && !done) document.getElementById("h").textContent="Almost there ..";
-},1000);
-
-// Tips / fun facts
-const TIPS=[
+// tips (sirf text + opacity)
+const TIPS = [
   "Tip: Eko se maths ke sawal step-by-step solve karwao.",
   "Fun fact: Shahad kabhi kharab nahi hota.",
   "Tip: Photo ya file attach karke bhi sawal pooch sakte ho.",
   "Fun fact: Octopus ke 3 dil hote hain.",
-  "Tip: Practice questions se padhai pakki hoti hai."
+  "Tip: Practice questions se padhai pakki hoti hai.",
+  "Tip: Message na jaye to Retry dabao, edit karke dobara bhi bhej sakte ho."
 ];
-let ti=0; const tipEl=document.getElementById("tip");
-function showTip(){tipEl.style.opacity=0;setTimeout(()=>{tipEl.textContent=TIPS[ti++%TIPS.length];tipEl.style.opacity=.9;},400);}
-showTip(); setInterval(showTip,5000);
+let ti = 0; const tipEl = $("tip");
+function showTip(){ tipEl.style.opacity = 0; setTimeout(()=>{ tipEl.textContent = TIPS[ti++ % TIPS.length]; tipEl.style.opacity = .9; }, 400); }
+showTip(); setInterval(showTip, 5000);
 
-// Server ko jagao + jaise hi ready ho, turant redirect
-let done=false;
+// Server ping: ready hote hi redirect
 async function check(){
   if(done) return;
-  const started=Date.now();
+  const started = Date.now();
+  const c = new AbortController(), to = setTimeout(()=>c.abort(), 6000);
   try{
-    const c=new AbortController(); setTimeout(()=>c.abort(),6000);
-    const r=await fetch(SITE+"/ping?t="+Date.now(),{cache:"no-store",signal:c.signal});
-    if(r.ok && (await r.text()).trim()==="ok"){
-      done=true;
-      location.replace(SITE);
-      return;
-    }
-  }catch(e){}
-  setTimeout(check,Math.max(0,1500-(Date.now()-started)));
+    const r = await fetch(SITE+"/ping?t="+Date.now(), {cache:"no-store", signal:c.signal});
+    if(r.ok && (await r.text()).trim() === "ok"){ clearTimeout(to); return go(); }
+    fails = 0;
+  }catch(e){ fails++; }
+  clearTimeout(to);
+  $("net").style.display = fails >= 4 ? "block" : "none";
+  timer = setTimeout(check, Math.max(0, 1500-(Date.now()-started)));
 }
 check();
+
+// tab background me ho to wapas aate hi turant check
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && !done){ clearTimeout(timer); check(); } });
 </script>
 </body>
 </html>
