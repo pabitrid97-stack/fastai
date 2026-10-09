@@ -11,15 +11,14 @@
     text-align:center;z-index:2;padding:20px;box-sizing:border-box}
   .orb{width:96px;height:96px;border-radius:50%;margin-bottom:22px;
     background:radial-gradient(circle at 30% 30%,#fff,#7ff3ff 40%,#8b5cf6 80%);
-    box-shadow:0 0 40px rgba(127,243,255,.7),0 0 90px rgba(139,92,246,.5);animation:pulse 2s ease-in-out infinite}
-  @keyframes pulse{50%{transform:scale(1.12);box-shadow:0 0 60px rgba(127,243,255,.9),0 0 120px rgba(139,92,246,.7)}}
-  h1{margin:0 0 6px;font-size:1.7rem;text-shadow:0 2px 12px rgba(0,0,0,.4)}
-  #sec{font-size:2.4rem;font-weight:700;margin:6px 0;font-variant-numeric:tabular-nums}
-  #tip{max-width:320px;min-height:44px;opacity:.9;font-size:.95rem;margin:10px 0 0;transition:opacity .4s}
+    box-shadow:0 0 40px rgba(127,243,255,.7),0 0 90px rgba(139,92,246,.5)}
+  h1{margin:0 0 6px;height:2.2rem;line-height:2.2rem;white-space:nowrap;font-size:1.7rem;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+  #sec{font-size:2.4rem;font-weight:700;margin:6px 0;height:3rem;line-height:3rem;width:6ch;font-variant-numeric:tabular-nums}
+  #tip{width:300px;max-width:90vw;height:64px;overflow:hidden;opacity:.9;font-size:.95rem;margin:10px 0 0;transition:opacity .4s}
   .b{position:absolute;bottom:-120px;border-radius:50%;
     background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.75),rgba(127,243,255,.25) 45%,rgba(139,92,246,.2));
-    border:1px solid rgba(255,255,255,.5);box-shadow:inset 0 0 12px rgba(255,255,255,.35);animation:rise linear forwards}
-  @keyframes rise{to{transform:translateY(-130vh) translateX(var(--dx));opacity:.9}}
+    border:1px solid rgba(255,255,255,.5);will-change:transform;animation:rise linear forwards;pointer-events:none}
+  @keyframes rise{to{transform:translate3d(var(--dx),-130vh,0)}}
 </style>
 </head>
 <body>
@@ -33,16 +32,19 @@
 // Aapki Render site
 const SITE = "https://fastai-rs6i.onrender.com";
 
-// Bubbles niche se upar
+// Bubbles niche se upar (halke: max 18 ek saath)
+const MAX_B=18; let nb=0;
 function bubble(){
+  if(document.hidden || nb>=MAX_B) return;
   const el=document.createElement("div"); el.className="b";
-  const s=14+Math.random()*60;
-  el.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}vw;--dx:${Math.random()*80-40}px;animation-duration:${4+Math.random()*5}s`;
+  const s=16+Math.random()*54;
+  el.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}vw;--dx:${Math.random()*80-40}px;animation-duration:${6+Math.random()*5}s`;
+  nb++;
+  el.addEventListener("animationend",()=>{el.remove();nb--;});
   document.body.appendChild(el);
-  setTimeout(()=>el.remove(),10000);
 }
-setInterval(bubble,220);
-for(let i=0;i<10;i++) setTimeout(bubble,i*120);
+setInterval(bubble,550);
+for(let i=0;i<6;i++) setTimeout(bubble,i*200);
 
 // 1 minute countdown (site jaagte hi turant khul jayegi, timer ka intezaar nahi)
 const t0=Date.now(), TOTAL=60;
@@ -51,7 +53,7 @@ setInterval(()=>{
   const m=Math.floor(left/60), sc=String(left%60).padStart(2,"0");
   document.getElementById("sec").textContent=m+":"+sc;
   if(left===0 && !done) document.getElementById("h").textContent="Almost there ..";
-},250);
+},1000);
 
 // Tips / fun facts
 const TIPS=[
