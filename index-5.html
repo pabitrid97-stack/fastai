@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#140b4a">
+<title>Starting Eko ..</title>
+<link rel="preconnect" href="https://fastai-rs6i.onrender.com" crossorigin>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23140b4a'/%3E%3Ctext x='32' y='45' font-size='38' font-weight='bold' text-anchor='middle' fill='%237ff3ff' font-family='Arial'%3EE%3C/text%3E%3C/svg%3E">
+<style>
+  :root{--c1:#7ff3ff;--c2:#c4a8ff;--c3:#ff7ee8;--ok:#4ade80}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  @property --ang{syntax:"<angle>";inherits:false;initial-value:0deg}
+  html,body{margin:0;height:100%;overflow:hidden;color:#fff;
+    font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Noto Serif","Noto Serif Devanagari","Times New Roman",serif;
+    -webkit-font-smoothing:antialiased;-webkit-user-select:none;user-select:none;
+    background:
+      radial-gradient(circle at 12% 8%,rgba(255,90,220,.42),transparent 42%),
+      radial-gradient(circle at 92% 28%,rgba(40,220,255,.34),transparent 45%),
+      radial-gradient(circle at 50% 100%,rgba(80,120,255,.50),transparent 52%),
+      linear-gradient(160deg,#2a0f6e 0%,#1a2f8a 48%,#0a5f86 100%)}
+
+  /* ===== background vibe (sirf transform/opacity) ===== */
+  .aurora,.waves,.stars,.float,.shoot,.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;contain:strict}
+  .aurora b{position:absolute;width:75vmax;height:75vmax;border-radius:50%;opacity:.6;
+    background:radial-gradient(circle,var(--a) 0,transparent 62%);will-change:transform;animation:drift var(--t) ease-in-out infinite alternate}
+  .aurora b:nth-child(1){--a:rgba(255,90,220,.40);--t:26s;top:-38vmax;left:-34vmax}
+  .aurora b:nth-child(2){--a:rgba(40,220,255,.34);--t:32s;top:-20vmax;right:-42vmax;animation-delay:-9s}
+  .aurora b:nth-child(3){--a:rgba(110,90,255,.48);--t:29s;bottom:-44vmax;left:-10vmax;animation-delay:-15s}
+  @keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(9vmax,7vmax,0) scale(1.18)}}
+
+  .waves{top:auto;height:20vh;min-height:110px}
+  .waves svg{position:absolute;left:0;bottom:0;width:200%;height:100%;will-change:transform;animation:flow var(--t) linear infinite}
+  .waves svg:nth-child(1){--t:22s;fill:rgba(127,243,255,.10)}
+  .waves svg:nth-child(2){--t:15s;fill:rgba(196,168,255,.13);animation-direction:reverse;height:80%}
+  .waves svg:nth-child(3){--t:10s;fill:rgba(255,126,232,.11);height:58%}
+  @keyframes flow{to{transform:translate3d(-50%,0,0)}}
+
+  .stars u{position:absolute;left:var(--x);top:var(--y);width:var(--z,3px);height:var(--z,3px);border-radius:50%;
+    background:#fff;box-shadow:0 0 8px 1px rgba(160,240,255,.9);opacity:0;animation:twinkle var(--t,4s) ease-in-out var(--d,0s) infinite}
+  @keyframes twinkle{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:.9;transform:scale(1.15)}}
+
+  .float span{position:absolute;bottom:-60px;left:var(--l);font-size:var(--f,26px);font-weight:700;line-height:1;
+    color:rgba(255,255,255,.55);text-shadow:0 0 14px rgba(127,243,255,.7);will-change:transform,opacity;animation:floatup var(--t) ease-in-out var(--d) infinite}
+  @keyframes floatup{
+    0%{transform:translate3d(0,0,0) rotate(-12deg);opacity:0}15%{opacity:.8}
+    50%{transform:translate3d(18px,-55vh,0) rotate(10deg)}
+    100%{transform:translate3d(-14px,-115vh,0) rotate(-8deg);opacity:0}}
+
+  .shoot s{position:absolute;left:var(--x);top:var(--y);width:120px;height:2px;border-radius:2px;opacity:0;
+    background:linear-gradient(90deg,#fff,rgba(127,243,255,.6) 30%,transparent);transform:rotate(28deg);
+    will-change:transform,opacity;animation:streak 9s ease-in var(--d) infinite}
+  @keyframes streak{
+    0%{opacity:0;transform:translate3d(0,0,0) rotate(28deg)}2%{opacity:1}
+    9%{opacity:0;transform:translate3d(260px,140px,0) rotate(28deg)}
+    100%{opacity:0;transform:translate3d(260px,140px,0) rotate(28deg)}}
+
+  .bg i{position:absolute;bottom:-160px;left:var(--l);width:var(--s);height:var(--s);border-radius:50%;
+    background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.8) 0 5%,rgba(255,255,255,.22) 15%,rgba(255,255,255,.05) 58%,rgba(120,220,255,.28) 100%);
+    border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 -6px 12px rgba(160,230,255,.18),0 0 16px rgba(127,243,255,.12);
+    will-change:transform,opacity;backface-visibility:hidden;animation:rise var(--t) linear var(--d) infinite}
+  .bg i:nth-child(3n){background:radial-gradient(circle at 30% 28%,rgba(255,255,255,.8) 0 5%,rgba(255,255,255,.2) 15%,rgba(255,255,255,.05) 58%,rgba(255,140,235,.30) 100%)}
+  @keyframes rise{
+    0%{transform:translate3d(0,0,0) scale(.8);opacity:0}10%{opacity:.9}
+    50%{transform:translate3d(24px,-60vh,0) scale(1)}
+    100%{transform:translate3d(-18px,-125vh,0) scale(1.1);opacity:0}}
+
+  .wrap{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:14px;padding-top:max(14px,env(safe-area-inset-top));padding-bottom:max(14px,env(safe-area-inset-bottom))}
+
+  .top{margin:0 0 52px;max-width:100%;font-size:clamp(.7rem,3.7vw,1.02rem);font-weight:800;letter-spacing:.6px;
+    background:linear-gradient(90deg,#fff,#aef6ff 50%,#ffd1fb);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 2px 10px rgba(127,243,255,.4))}
+
+  /* ===== card ===== */
+  .card{position:relative;width:min(100%,430px);padding:46px 18px 20px;border-radius:32px;text-align:center;
+    background:
+      radial-gradient(120% 60% at 50% 0%,rgba(127,243,255,.20),transparent 60%),
+      linear-gradient(135deg,rgba(255,255,255,.20),rgba(255,255,255,.06)),rgba(30,18,110,.52);
+    -webkit-backdrop-filter:blur(12px) saturate(140%);backdrop-filter:blur(12px) saturate(140%);
+    box-shadow:0 18px 50px rgba(5,0,40,.5),0 0 60px rgba(139,92,246,.32),inset 0 1px 0 rgba(255,255,255,.5);
+    animation:in .8s cubic-bezier(.2,.8,.2,1) both}
+  .card::before{--ang:0deg;content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;pointer-events:none;
+    background:conic-gradient(from var(--ang),#ff7ee8,#9b8cff,#7ff3ff,#c4a8ff,rgba(255,255,255,.25) 60%,#ff7ee8);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:turn 8s linear infinite}
+  .card::after{content:"";position:absolute;inset:-28px;z-index:-1;border-radius:54px;pointer-events:none;
+    background:radial-gradient(closest-side,rgba(139,92,246,.42),transparent 72%);animation:breathe 4.8s ease-in-out infinite}
+  @keyframes turn{to{--ang:360deg}}
+  @keyframes breathe{50%{opacity:.55;transform:scale(1.04)}}
+  @keyframes in{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* bijli badge + orbit */
+  .bolt{position:absolute;top:-37px;left:50%;width:74px;height:74px;margin-left:-37px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 35%,#1d1450,#07041f 75%);border:3px solid #1b1040;
+    box-shadow:0 0 0 2px rgba(127,243,255,.6),0 0 28px rgba(127,243,255,.7),0 10px 24px rgba(5,0,40,.6)}
+  .bolt svg{width:34px;height:34px;filter:drop-shadow(0 0 8px #7ff3ff);animation:zap 2.4s ease-in-out infinite}
+  @keyframes zap{50%{transform:scale(1.12);filter:drop-shadow(0 0 14px #7ff3ff)}}
+  .bolt .o{position:absolute;border-radius:50%;pointer-events:none;will-change:transform}
+  .bolt .o1{inset:-11px;border:1.5px dashed rgba(255,255,255,.3);animation:spin 14s linear infinite}
+  .bolt .o2{inset:-18px;border:1px dotted rgba(255,255,255,.22);animation:spin 22s linear infinite reverse}
+  .bolt .o::after{content:"";position:absolute;top:-4.5px;left:50%;width:9px;height:9px;margin-left:-4.5px;border-radius:50%;
+    background:#fff;box-shadow:0 0 10px 2px var(--c1),0 0 20px 4px rgba(127,243,255,.5)}
+  .bolt .o2::after{width:7px;height:7px;margin-left:-3.5px;top:-3.5px;background:#ffd1fb;box-shadow:0 0 10px 2px var(--c3),0 0 18px 3px rgba(255,126,232,.5)}
+
+  .pill{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:7px 14px;max-width:100%;
+    font-size:clamp(.7rem,3.3vw,.86rem);font-weight:600;border-radius:99px;
+    background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+  .pill::before{content:"";flex:none;width:9px;height:9px;border-radius:50%;background:#4ade80;
+    box-shadow:0 0 0 0 rgba(74,222,128,.6),0 0 10px #4ade80;animation:ping 1.8s ease-out infinite}
+  @keyframes ping{70%,100%{box-shadow:0 0 0 8px rgba(74,222,128,0),0 0 10px #4ade80}}
+
+  .brand{margin:0;font-size:clamp(1.55rem,8vw,2.1rem);font-weight:900;letter-spacing:1px;line-height:1.1;
+    background:linear-gradient(90deg,#d9c8ff,#fff,#7ff3ff,#fff,#ffd1fb,#d9c8ff);background-size:250% 100%;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 2px 12px rgba(196,168,255,.5));animation:shine 7s linear infinite}
+  @keyframes shine{to{background-position:-250% 0}}
+  h1{margin:2px 0 4px;font-size:clamp(1.3rem,6.6vw,1.8rem);font-weight:500;line-height:1.2;letter-spacing:.2px;color:#ece6ff;
+    text-shadow:0 0 18px rgba(196,168,255,.55)}
+  #status{margin:0 0 12px;min-height:1.3em;font-size:.8rem;opacity:.8}
+
+  /* ===== checklist: dhire dhire tick (pure CSS timing) ===== */
+  @keyframes on{from{opacity:0}to{opacity:1}}
+  @keyframes off{to{opacity:0}}
+  @keyframes pop{0%{opacity:0;transform:scale(.3)}60%{opacity:1;transform:scale(1.25)}100%{opacity:1;transform:scale(1)}}
+  @keyframes grow{to{transform:scaleX(1)}}
+  .steps{display:flex;flex-direction:column;gap:7px;margin:0 0 14px;text-align:left}
+  .row{position:relative;display:flex;align-items:center;gap:11px;padding:8px 12px;border-radius:14px;
+    font-size:clamp(.8rem,3.7vw,.94rem);font-weight:500;line-height:1.25;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
+  .row::before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;opacity:0;
+    background:linear-gradient(90deg,rgba(95,233,255,.16),rgba(196,168,255,.10));
+    border:1px solid rgba(127,243,255,.65);box-shadow:0 0 16px rgba(127,243,255,.35);
+    animation:on .3s ease var(--s) forwards,off .3s ease var(--e) forwards}
+  .row::after{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;opacity:0;
+    border:1px solid rgba(74,222,128,.55);background:rgba(74,222,128,.07);
+    animation:on .5s ease var(--e) forwards}
+  .row>*{position:relative;z-index:1}
+  .tx{flex:1;min-width:0}
+  .ic{position:relative;flex:none;width:22px;height:22px}
+  .ic span{position:absolute;inset:0;border-radius:50%}
+  .iw{border:2.5px solid #ff7ee8;box-shadow:0 0 10px rgba(255,126,232,.5);animation:off .3s ease var(--s) forwards}
+  .iw::after{content:"";position:absolute;inset:4px;border-radius:50%;background:#ff7ee8;opacity:.5}
+  .ia{opacity:0;animation:on .3s ease var(--s) forwards,off .25s ease var(--e) forwards}
+  .ia::before{content:"";position:absolute;inset:0;border-radius:50%;border:3px dotted #5fe9ff;box-shadow:0 0 10px rgba(95,233,255,.7);animation:spin 1.3s linear infinite}
+  .id{opacity:0;background:var(--ok);box-shadow:0 0 14px rgba(74,222,128,.7);animation:pop .55s cubic-bezier(.3,1.4,.5,1) var(--e) forwards}
+  .id::after{content:"";position:absolute;left:7px;top:3.5px;width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
+  .st{display:inline-grid;vertical-align:baseline}
+  .st em{grid-area:1/1;font-style:normal;font-weight:800;letter-spacing:.3px;white-space:nowrap}
+  .st .w{color:#ff7ee8;animation:off .2s ease var(--s) forwards}
+  .st .a{color:#5fe9ff;opacity:0;animation:on .25s ease var(--s) forwards,off .2s ease var(--e) forwards}
+  .st .d{color:var(--ok);opacity:0;animation:on .4s ease var(--e) forwards}
+  .mini{position:absolute;left:45px;right:14px;bottom:4px;height:3px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden;opacity:0;
+    animation:on .25s ease var(--s) forwards,off .25s ease var(--e) forwards}
+  .mini::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,#5ff3ff,#c4a8ff,#ff7ee8);
+    transform:scaleX(0);transform-origin:left;animation:grow var(--dur) linear var(--s) forwards}
+
+  /* ===== progress bar ===== */
+  .bar{height:24px;margin:0 2px 14px;padding:3px;border-radius:99px;
+    background:linear-gradient(90deg,#5ff3ff,#c4a8ff 40%,#ff7ee8 70%,#ffb347);
+    box-shadow:0 0 18px rgba(255,126,232,.45),0 0 28px rgba(127,243,255,.3)}
+  .trk{position:relative;height:100%;overflow:hidden;border-radius:99px;background:#150c4d}
+  .trk i{position:absolute;inset:0;border-radius:99px;transform:translate3d(-100%,0,0);will-change:transform;
+    background:linear-gradient(90deg,#3de8ff,#a78bfa 35%,#ff5fd2 70%,#ffa24a);animation:fillbar 60s linear forwards}
+  .trk i::before{content:"";position:absolute;right:2px;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;
+    background:#fff;box-shadow:0 0 10px 3px #fff,0 0 20px 6px rgba(255,162,74,.8)}
+  .trk i::after{content:"";position:absolute;inset:0;border-radius:inherit;
+    background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.4) 50%,transparent 70%);background-size:200% 100%;animation:sheen 2.2s linear infinite}
+  @keyframes fillbar{to{transform:translate3d(0,0,0)}}
+  @keyframes sheen{from{background-position:200% 0}to{background-position:-200% 0}}
+
+  /* ===== countdown ===== */
+  .lbl{margin:0;font-size:clamp(.74rem,3.5vw,.95rem);font-weight:800;letter-spacing:1px;
+    background:linear-gradient(90deg,#5ff3ff,#c4a8ff 60%,#ff7ee8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  #sec{display:block;margin:0;font-size:clamp(3.1rem,16vw,4.4rem);font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:2px;
+    background:linear-gradient(90deg,#3df0ff,#8f8bff 55%,#ff6ad9);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 14px rgba(127,243,255,.55)) drop-shadow(0 0 28px rgba(255,126,232,.35))}
+  .wait{margin:4px 0 0;font-size:.95rem;font-weight:600;opacity:.95}
+  .wait::after{content:"";display:inline-block;width:1.3em;text-align:left;animation:dots 1.6s steps(4) infinite}
+  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%,100%{content:"..."}}
+
+  #tip{display:flex;align-items:center;justify-content:center;min-height:64px;margin:14px auto 0;max-width:340px;padding:10px 14px;
+    font-size:.84rem;line-height:1.45;opacity:.9;transition:opacity .4s;border-radius:16px;
+    background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.14)}
+  #net{display:none;margin-top:10px;padding:7px 14px;border-radius:99px;font-size:.8rem;color:#ffd3d3;
+    background:rgba(255,90,110,.14);border:1px solid rgba(255,140,150,.35)}
+  noscript{position:fixed;left:0;right:0;bottom:20px;text-align:center}
+  noscript a{color:#7ff3ff}
+
+  @media (max-height:840px){#tip{display:none}}
+  @media (max-height:750px){#status{display:none}.top{margin-bottom:46px}.pill{margin-bottom:10px}}
+  @media (max-height:690px){
+    .steps{gap:5px;margin-bottom:10px}.row{padding:6px 12px}.card{padding-top:42px}.top{margin-bottom:42px}
+    #sec{font-size:2.8rem}.bar{margin-bottom:10px}.float span:nth-child(n+5){display:none}}
+  @media (prefers-reduced-motion:reduce){
+    .bg i,.card,.card::before,.card::after,.aurora b,.waves svg,.stars u,.float span,.shoot s,.bolt .o,.bolt svg,
+    .pill::before,.brand,.trk i::after,.wait::after{animation:none}
+    .bg i{opacity:.4;bottom:auto;top:30%}.float span{opacity:.35;bottom:auto;top:40%}.shoot{display:none}.stars u{opacity:.6}
+  }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><b></b><b></b><b></b></div>
+<div class="waves" aria-hidden="true">
+  <svg viewBox="0 0 2400 120" preserveAspectRatio="none"><path d="M0,60 q150,-60 300,0 t300,0 t300,0 t300,0 t300,0 t300,0 t300,0 t300,0 V120 H0 Z"/></svg>
+  <svg viewBox="0 0 2400 120" preserveAspectRatio="none"><path d="M0,60 q150,-60 300,0 t300,0 t300,0 t300,0 t300,0 t300,0 t300,0 t300,0 V120 H0 Z"/></svg>
+  <svg viewBox="0 0 2400 120" preserveAspectRatio="none"><path d="M0,60 q150,-60 300,0 t300,0 t300,0 t300,0 t300,0 t300,0 t300,0 t300,0 V120 H0 Z"/></svg>
+</div>
+<div class="stars" aria-hidden="true">
+  <u style="--x:12%;--y:14%;--t:4s;--d:-1s"></u><u style="--x:78%;--y:9%;--z:4px;--t:5s;--d:-3s"></u>
+  <u style="--x:90%;--y:46%;--t:3.6s;--d:-2s"></u><u style="--x:6%;--y:58%;--z:4px;--t:4.6s;--d:-4s"></u>
+  <u style="--x:30%;--y:88%;--t:5.2s;--d:-1.5s"></u><u style="--x:66%;--y:82%;--z:2px;--t:3.8s;--d:-2.5s"></u>
+  <u style="--x:44%;--y:5%;--z:2px;--t:4.2s;--d:-0.5s"></u><u style="--x:94%;--y:90%;--t:5s;--d:-3.5s"></u>
+</div>
+<div class="float" aria-hidden="true">
+  <span style="--l:8%;--f:28px;--t:21s;--d:-2s">π</span><span style="--l:24%;--f:22px;--t:26s;--d:-9s">∑</span>
+  <span style="--l:41%;--f:30px;--t:23s;--d:-14s">💡</span><span style="--l:58%;--f:24px;--t:28s;--d:-6s">⚛</span>
+  <span style="--l:74%;--f:26px;--t:24s;--d:-18s">📚</span><span style="--l:88%;--f:22px;--t:27s;--d:-11s">√</span>
+  <span style="--l:16%;--f:24px;--t:30s;--d:-22s">🧪</span><span style="--l:66%;--f:28px;--t:25s;--d:-4s">∞</span>
+</div>
+<div class="shoot" aria-hidden="true"><s style="--x:8%;--y:6%;--d:-1s"></s><s style="--x:46%;--y:14%;--d:-5.5s"></s></div>
+
+<div class="bg" aria-hidden="true">
+  <i style="--s:70px;--l:6%;--d:-0s;--t:22s"></i><i style="--s:34px;--l:22%;--d:-3s;--t:17s"></i>
+  <i style="--s:104px;--l:38%;--d:-6s;--t:28s"></i><i style="--s:52px;--l:56%;--d:-1s;--t:20s"></i>
+  <i style="--s:26px;--l:72%;--d:-8s;--t:15s"></i><i style="--s:88px;--l:84%;--d:-4s;--t:25s"></i>
+  <i style="--s:44px;--l:12%;--d:-11s;--t:19s"></i><i style="--s:62px;--l:48%;--d:-13s;--t:23s"></i>
+  <i style="--s:30px;--l:92%;--d:-9s;--t:16s"></i>
+</div>
+
+<div class="wrap">
+  <div class="top">WORKSPACE INITIALIZATION IN PROGRESS</div>
+  <div class="card">
+    <div class="bolt" aria-hidden="true">
+      <span class="o o1"></span><span class="o o2"></span>
+      <svg viewBox="0 0 24 24"><path d="M13.5 2 5 13.2h5.6L9.7 22 19 10.2h-5.7z" fill="#5fe9ff"/></svg>
+    </div>
+    <div class="pill">Free • Hindi + English • Study, Code &amp; Art</div>
+    <div class="brand">EKOFORGE AI</div>
+    <h1 id="h">Workspace Launching...</h1>
+    <p id="status">Server ko jagaya ja raha hai ✨</p>
+
+    <div class="steps">
+      <div class="row" style="--s:0s;--e:4s;--dur:4s"><span class="ic" aria-hidden="true"><span class="iw"></span><span class="ia"></span><span class="id"></span></span><span class="tx">Security Scan: <span class="st"><em class="w">WAITING</em><em class="a">SCANNING</em><em class="d">COMPLETE</em></span></span><span class="mini" aria-hidden="true"></span></div>
+      <b class="row" style="--s:4s;--e:18s;--dur:14s"><span class="ic" aria-hidden="true"><span class="iw"></span><span class="ia"></span><span class="id"></span></span><span class="tx">Neural Network Data Sync: <span class="st"><em class="w">WAITING</em><em class="a">IN PROGRESS</em><em class="d">COMPLETE</em></span></span><span class="mini" aria-hidden="true"></span></b>
+      <b class="row" style="--s:18s;--e:38s;--dur:20s"><span class="ic" aria-hidden="true"><span class="iw"></span><span class="ia"></span><span class="id"></span></span><span class="tx">Eko Language Models (Hindi/English): <span class="st"><em class="w">WAITING</em><em class="a">LOADING</em><em class="d">COMPLETE</em></span></span><span class="mini" aria-hidden="true"></span></b>
+      <b class="row" style="--s:38s;--e:56s;--dur:18s"><span class="ic" aria-hidden="true"><span class="iw"></span><span class="ia"></span><span class="id"></span></span><span class="tx">Feature Pack Unlock: <span class="st"><em class="w">WAITING</em><em class="a">UNLOCKING</em><em class="d">COMPLETE</em></span></span><span class="mini" aria-hidden="true"></span></b>
+    </div>
+
+    <div class="bar" aria-hidden="true"><div class="trk"><i></i></div></div>
+
+    <p class="lbl">FINAL ACTIVATION COUNTDOWN</p>
+    <div id="sec">1:00</div>
+    <p class="wait">Wait to Auto-Load</p>
+
+    <p id="tip"></p>
+    <div id="net">Internet slow lag raha hai, koshish jaari hai ..</div>
+  </div>
+</div>
+<noscript><a href="https://fastai-rs6i.onrender.com">Eko kholne ke liye yahan tap karo</a></noscript>
+
+<script>
+const SITE = "https://fastai-rs6i.onrender.com";
+const TOTAL = 60;
+const $ = id => document.getElementById(id);
+let done = false, fails = 0;
+const t0 = Date.now();
+
+function go(){ if(done) return; done = true; $("h").textContent = "Ready! 🚀"; $("status").textContent = "Eko khul raha hai .."; location.replace(SITE); }
+
+// countdown: 1 baar per second (pehle 4 baar/sec tha)
+const STAGES = [[0,"Server ko jagaya ja raha hai ✨"],[15,"Eko tayyar ho raha hai .."],[40,"Bas thodi der aur .."]];
+let stage = 0;
+function tick(){
+  const el = Math.floor((Date.now()-t0)/1000), left = Math.max(0, TOTAL-el);
+  $("sec").textContent = Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
+  let s = 0; STAGES.forEach((x,i)=>{ if(el>=x[0]) s = i; });
+  if(s !== stage || el === 0){
+    stage = s; $("status").textContent = STAGES[s][1];
+    document.querySelectorAll(".steps b").forEach((b,i)=>b.classList.toggle("on", i<=s));
+  }
+  if(left === 0 && !done) $("h").textContent = "Almost there ..";
+}
+setInterval(tick, 1000); tick();
+
+// tips (sirf text + opacity)
+const TIPS = [
+  "Tip: Eko se maths ke sawal step-by-step solve karwao.",
+  "Tip: Photo ya file attach karke bhi sawal pooch sakte ho.",
+  "Tip: Practice questions se padhai pakki hoti hai.",
+  "Tip: Message na jaye to Retry dabao, edit karke dobara bhi bhej sakte ho.",
+  "Tip: Samajh na aaye to bolo \"aur aasan bhasha mein samjhao\".",
+  "Tip: Kisi topic ka GK quiz banwa kar khud ko test karo.",
+  "Tip: Science ke diagram Eko se banwao, yaad rakhna aasan ho jata hai.",
+  "Tip: Interview ki practice Eko ke saath karo, confidence badhega.",
+  "Tip: Typing ka mann na ho to voice mein baat karo.",
+  "Tip: Theme badal kar Eko ko apna look do.",
+  "Tip: Eko se 20 Questions game khelo, dimaag tez hota hai.",
+  "Tip: Jawab lamba lage to bolo \"short mein batao\".",
+  "Tip: Padhai mein 25 min focus, 5 min break (Pomodoro) try karo.",
+  "Tip: Padha hua doosre ko samjhao, khud ko zyada yaad rehta hai.",
+  "Tip: Chapter padhne ke baad kitaab band karke khud se sawal pucho.",
+  "Tip: Kal ki padhai aaj 5 minute dohrao, bhoolna kam hoga.",
+  "Tip: Exam se pehle neend poori lo, yaaddasht sach mein behtar hoti hai.",
+  "Tip: Sawal poochte waqt class aur topic bata do, jawab sahi aata hai."
+];
+const FACTS = [
+  "Fun fact: Shahad kabhi kharab nahi hota.",
+  "Fun fact: Octopus ke 3 dil hote hain.",
+  "Fun fact: Venus par ek din uske ek saal se lamba hota hai.",
+  "Fun fact: Kela botany ke hisaab se berry hai, stroberry nahi.",
+  "Fun fact: Bijli ka taapman Sooraj ki sataah se kai guna zyada hota hai.",
+  "Fun fact: Sooraj ki roshni Dharti tak lagbhag 8 minute mein pahunchti hai.",
+  "Fun fact: Dolphin sote waqt dimaag ka sirf aadha hissa sulata hai.",
+  "Fun fact: Octopus ka khoon neela hota hai.",
+  "Fun fact: Insaani dimaag mein lagbhag 86 arab neurons hote hain.",
+  "Fun fact: Shark ka wajood ped-paudhon se bhi purana hai.",
+  "Fun fact: Wombat ki potty chaukor (cube) shape ki hoti hai.",
+  "Fun fact: Pi (π) ke digits kabhi khatam nahi hote.",
+  "Fun fact: Zero ke niyam Bharat mein Brahmagupta ne likhe the.",
+  "Fun fact: Antarctica duniya ka sabse bada registan hai (thanda wala).",
+  "Fun fact: Aawaz paani mein hawa se lagbhag 4 guna tez chalti hai.",
+  "Fun fact: Ek light-year lagbhag 9.46 trillion km hota hai.",
+  "Fun fact: Jupiter ka Great Red Spot ek tufan hai jo sadiyon se chal raha hai.",
+  "Fun fact: Dharti ka lagbhag 71% hissa paani se dhaka hai.",
+  "Fun fact: Bade insaan ke shareer mein 206 haddiyan hoti hain.",
+  "Fun fact: Dil din mein lagbhag 1 lakh baar dhadakta hai."
+];
+function shuffle(a){ a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+// tips aur facts ek-ek karke mix, har baar naya order
+const MIX = (function(){ const t=shuffle(TIPS), f=shuffle(FACTS), o=[]; for(let i=0;i<Math.max(t.length,f.length);i++){ if(t[i]) o.push(t[i]); if(f[i]) o.push(f[i]); } return o; })();
+let ti = 0; const tipEl = $("tip");
+function showTip(){ tipEl.style.opacity = 0; setTimeout(()=>{ tipEl.textContent = MIX[ti++ % MIX.length]; tipEl.style.opacity = .9; }, 400); }
+showTip(); setInterval(showTip, 5000);
+
+// Server ping: har 1.5 sec me ping, ready hote hi redirect
+const PING_EVERY = 1500, PING_TIMEOUT = 5000, MAX_INFLIGHT = 3;
+let inflight = 0, loop = null, corsOK = true, opaqueHits = 0;
+
+async function ping(){
+  if(done || inflight >= MAX_INFLIGHT) return;
+  inflight++;
+  const c = new AbortController(), to = setTimeout(()=>c.abort(), PING_TIMEOUT);
+  try{
+    if(corsOK){
+      // Proper check: server ne CORS allow kiya ho to /ping ka "ok" verify hota hai
+      const r = await fetch(SITE+"/ping?t="+Date.now(), {cache:"no-store", signal:c.signal});
+      if(r.ok && (await r.text()).trim() === "ok"){ fails = 0; return go(); }
+      fails++;                       // server jaag raha hai par abhi ready nahi (503 etc.)
+    }else{
+      // Fallback: CORS nahi hai -> no-cors se sirf "server ne jawab diya" pata chalta hai
+      await fetch(SITE+"/ping?t="+Date.now(), {mode:"no-cors", cache:"no-store", signal:c.signal});
+      if(++opaqueHits >= 2) return go();   // 2 baar jawab mila -> open
+    }
+  }catch(e){
+    // CORS error aur network error dono TypeError hote hain -> ek baar fallback try karo
+    if(e.name === "TypeError" && corsOK && fails === 0 && !c.signal.aborted){
+      try{
+        await fetch(SITE+"/ping?t="+Date.now(), {mode:"no-cors", cache:"no-store", signal:c.signal});
+        corsOK = false; opaqueHits = 1;   // server reachable hai, bas CORS band hai
+      }catch(_){ fails++; }
+    }else{ fails++; }
+  }finally{
+    clearTimeout(to); inflight--;
+    $("net").style.display = fails >= 4 ? "block" : "none";
+  }
+}
+function start(){ clearInterval(loop); ping(); loop = setInterval(ping, PING_EVERY); }
+start();
+
+// tab background me ho to wapas aate hi turant check
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && !done) start(); });
+</script>
+</body>
+</html>
